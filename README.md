@@ -1,6 +1,6 @@
 # TP2 - Autentikasi Laravel
 
-Tugas personal 2 yang dibuat dengan Autentikasi web pada Laravel
+Tugas personal 2 yang dibuat dengan Autentikasi web pada Laravel 10
 
 ### Prerequisite
 
