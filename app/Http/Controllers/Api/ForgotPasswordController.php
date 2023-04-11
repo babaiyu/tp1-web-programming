@@ -39,7 +39,11 @@ class ForgotPasswordController extends Controller
         }
 
         $token = Str::random(64);
+        $link = '/' . 'reset-password/' . $token . '/' . $request->input('email');
         $checkDB = DB::table('password_reset_tokens')->where('email', $request->input('email'))->first();
+
+        // Mail::to($request->input('email'))
+        //     ->send(new ResetPasswordMail($request->input('email'), $link));
 
         if ($checkDB != null) {
             DB::table('password_reset_tokens')->where('email', $request->input('email'))->update(['token' => $token]);
@@ -47,7 +51,7 @@ class ForgotPasswordController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Success send reset password link',
-                'link' => '/api/reset-password/' . $token,
+                'link' => $link,
             ]);
         }
 
@@ -58,8 +62,6 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($saveDB) {
-            $link = '/api/reset-password/' . $token;
-
             // Mail::send(
             //     'mails.resetpassword',
             //     [
@@ -71,9 +73,6 @@ class ForgotPasswordController extends Controller
             //         $message->subject('Reset password!');
             //     }
             // );
-
-            Mail::to($request->input('email'))
-                ->send(new ResetPasswordMail($request->input('email'), $link));
 
             return response()->json([
                 'success' => true,

@@ -19,3 +19,19 @@ export async function apiLogout(token) {
         headers: { Authorization: "Bearer " + token },
     });
 }
+
+export async function apiGetUser(token) {
+    return await instance.get("/user", {
+        headers: {
+            Authorization: "Bearer " + token,
+        },
+    });
+}
+
+export async function apiForgotPassword(body) {
+    return await instance.post("/forgot-password", body);
+}
+
+export async function apiResetPassword(token, body) {
+    return await instance.post(`/reset-password/${token}`, body);
+}

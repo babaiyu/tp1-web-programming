@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, Head } from "@inertiajs/react";
 import { apiLogout } from "../api";
 
-export default function Layout({ children }) {
+export default function Layout({ children, isForGuest = false }) {
     const [token, setToken] = useState(null);
 
     const onLogout = async (e) => {
@@ -11,23 +11,35 @@ export default function Layout({ children }) {
         await apiLogout(token).finally(async () => {
             await Promise.all([
                 setToken(null),
-                sessionStorage.clear(),
+                localStorage.clear(),
                 (window.location.href = "/"),
             ]);
         });
     };
 
     useEffect(() => {
-        const tempToken = sessionStorage.getItem("TOKEN");
+        const tempToken = localStorage.getItem("TOKEN") ?? null;
         setToken(tempToken);
-    }, []);
+
+        if (isForGuest && tempToken !== null) {
+            window.location.replace("/");
+        }
+    }, [isForGuest]);
 
     return (
         <>
+            <Head>
+                <title>TP2 Auth</title>
+                <meta name="description" content="Your page description" />
+            </Head>
+
             <header>
                 <nav className="navbar container mx-auto bg-base-100">
                     <div className="flex-1">
-                        <Link href="/" className="btn btn-ghost normal-case text-xl">
+                        <Link
+                            href="/"
+                            className="btn btn-ghost normal-case text-xl"
+                        >
                             TP2 Auth
                         </Link>
                     </div>
@@ -58,10 +70,6 @@ export default function Layout({ children }) {
                                     className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
                                 >
                                     <li>
-                                        <Link href="/signin">Profile</Link>
-                                    </li>
-                                    <li>
-                                        {/* <Link href="#">Sign Out</Link> */}
                                         <a onClick={onLogout}>Sign Out</a>
                                     </li>
                                 </ul>

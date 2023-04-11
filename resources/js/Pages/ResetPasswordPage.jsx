@@ -1,25 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { useForm, Controller } from "react-hook-form";
 import Layout from "../Components/Layout";
 import InputText from "../Components/InputText";
-import { schemaRegister } from "../helpers/validation";
-import { apiRegister } from "../api";
+import { schemaResetPassword } from "../helpers/validation";
+import { apiResetPassword } from "../api";
 import Alert from "../Components/Alert";
 
-export default function RegisterPage() {
+export default function ResetPasswordPage({ token = null, email = null }) {
     const {
         control,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm({
         defaultValues: {
-            name: "",
             email: "",
             password: "",
             password_confirmation: "",
         },
-        resolver: schemaRegister,
+        resolver: schemaResetPassword,
     });
 
     const [errorMessage, setErrorMessage] = useState({
@@ -28,18 +28,22 @@ export default function RegisterPage() {
     });
 
     const onSubmit = async (data) => {
-        await apiRegister(data)
+        await apiResetPassword(token, data)
             .then((res) => {
                 window.location.href =
-                    "/signin?message=Success sign-up!&type=success";
+                    "/signin?message=Success reset password&type=success";
             })
             .catch((err) => {
                 const message =
-                    JSON.stringify(err?.response?.data) ?? err?.message;
+                    JSON.stringify(err?.response?.data?.message) ??
+                    err?.message;
                 setErrorMessage({ message, type: "danger" });
-                // alert(JSON.stringify(err?.response?.data) ?? err?.message);
             });
     };
+
+    useEffect(() => {
+        setValue("email", email);
+    }, []);
 
     return (
         <Layout isForGuest>
@@ -51,29 +55,16 @@ export default function RegisterPage() {
 
             <section className="container mx-auto max-w-7xl">
                 <div className="mt-8 text-center flex flex-col justify-center items-center">
-                    <h1 className="text-2xl font-bold">Sign Up</h1>
-                    <h2 className="text-lg">Register as user here...</h2>
+                    <h1 className="text-2xl font-bold">Reset Password</h1>
+                    <h2 className="text-lg">
+                        Finish this step to reset your password!
+                    </h2>
                 </div>
 
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col items-center"
                 >
-                    <Controller
-                        control={control}
-                        name="name"
-                        render={({ field }) => (
-                            <InputText
-                                label="Name"
-                                type="text"
-                                placeholder="Enter your name"
-                                errorMessage={errors?.name?.message ?? ""}
-                                onChange={field.onChange}
-                                onBlur={field.onBlur}
-                                value={field.value}
-                            />
-                        )}
-                    />
                     <Controller
                         control={control}
                         name="email"
@@ -86,6 +77,7 @@ export default function RegisterPage() {
                                 onChange={field.onChange}
                                 onBlur={field.onBlur}
                                 value={field.value}
+                                disabled
                             />
                         )}
                     />
@@ -126,14 +118,13 @@ export default function RegisterPage() {
                         className="btn btn-primary btn-block max-w-xs"
                         type="submit"
                     >
-                        Sign Up
+                        Reset Password
                     </button>
 
                     <p className="text-center">
-                        Already have an account?{" "}
                         <Link href="/signin">
                             <button className="btn btn-link" type="button">
-                                Sign In here
+                                {"<-"} Back to Sign In
                             </button>
                         </Link>
                     </p>

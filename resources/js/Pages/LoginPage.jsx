@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import { useForm, Controller } from "react-hook-form";
+import clsx from "clsx";
 import Layout from "../Components/Layout";
 import InputText from "../Components/InputText";
 import Alert from "../Components/Alert";
@@ -12,6 +13,7 @@ export default function LoginPage({ errorMessage }) {
         control,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm({
         defaultValues: {
             email: "",
@@ -24,24 +26,26 @@ export default function LoginPage({ errorMessage }) {
         message: null,
         type: null,
     });
+    const [countFail, setCountFail] = useState(0);
 
     const onSubmit = async (data) => {
         await apiLogin(data)
             .then((res) => {
                 const response = res.data;
-                sessionStorage.setItem("TOKEN", response?.token);
+                localStorage.setItem("TOKEN", response?.token);
 
                 window.location.href = "/";
             })
             .catch((err) => {
+                setValue("password", "");
                 const message = err?.response?.data?.message ?? err?.message;
                 setError({ message, type: "danger" });
-                // alert(JSON.stringify(err?.response?.data) ?? err?.message);
+                setCountFail((v) => v + 1);
             });
     };
 
     return (
-        <Layout>
+        <Layout isForGuest>
             <Alert
                 message={error?.message ?? errorMessage?.message}
                 type={error?.type ?? errorMessage?.type}
@@ -69,6 +73,8 @@ export default function LoginPage({ errorMessage }) {
                                 placeholder="eg: hello@mail.com"
                                 errorMessage={errors?.email?.message ?? ""}
                                 onChange={field.onChange}
+                                onBlur={field.onBlur}
+                                value={field.value}
                             />
                         )}
                     />
@@ -83,6 +89,8 @@ export default function LoginPage({ errorMessage }) {
                                 placeholder="Enter your password"
                                 errorMessage={errors?.password?.message ?? ""}
                                 onChange={field.onChange}
+                                onBlur={field.onBlur}
+                                value={field.value}
                             />
                         )}
                     />
@@ -97,8 +105,12 @@ export default function LoginPage({ errorMessage }) {
                     </div>
 
                     <button
-                        className="btn btn-primary btn-block max-w-xs"
+                        className={clsx(
+                            "btn btn-primary btn-block max-w-xs",
+                            countFail >= 3 && "btn-disabled"
+                        )}
                         type="submit"
+                        disabled={countFail >= 3}
                     >
                         Sign In
                     </button>

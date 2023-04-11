@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -25,7 +27,7 @@ class LoginController extends Controller
         }
 
         $loginInformation = $request->only('email', 'password');
-        $token = auth()->guard('api')->attempt($loginInformation);
+        $token = auth()->guard('api')->attempt($loginInformation, $remember = true);
 
         if (!$token) {
             return response()->json([

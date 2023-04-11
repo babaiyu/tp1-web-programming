@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class HomeController extends Controller
+class ForgotPasswordController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        return Inertia::render('HomePage');
+        return Inertia::render('ForgotPasswordPage');
     }
 }
