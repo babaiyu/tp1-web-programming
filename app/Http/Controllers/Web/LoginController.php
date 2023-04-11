@@ -8,7 +8,16 @@ use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-    public function index() {
-        return Inertia::render('LoginPage');
+    public function index(Request $request)
+    {
+        $message = $request->query('message');
+        $type = $request->query('type');
+
+        return Inertia::render('LoginPage', [
+            'errorMessage' => [
+                'message' => $message,
+                'type' => $type,
+            ],
+        ]);
     }
 }
