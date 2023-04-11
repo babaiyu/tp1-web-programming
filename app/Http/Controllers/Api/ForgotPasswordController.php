@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPasswordMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -37,7 +39,7 @@ class ForgotPasswordController extends Controller
         }
 
         $token = Str::random(64);
-        $checkDB = DB::table('password_reset_tokens')->where('email', $request->input('email'))->get();
+        $checkDB = DB::table('password_reset_tokens')->where('email', $request->input('email'))->first();
 
         if ($checkDB != null) {
             DB::table('password_reset_tokens')->where('email', $request->input('email'))->update(['token' => $token]);
@@ -56,10 +58,27 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($saveDB) {
+            $link = '/api/reset-password/' . $token;
+
+            // Mail::send(
+            //     'mails.resetpassword',
+            //     [
+            //         'email' => $request->input('email'),
+            //         'resetLink' => $link
+            //     ],
+            //     function ($message) use ($request) {
+            //         $message->to($request->input('email'));
+            //         $message->subject('Reset password!');
+            //     }
+            // );
+
+            Mail::to($request->input('email'))
+                ->send(new ResetPasswordMail($request->input('email'), $link));
+
             return response()->json([
                 'success' => true,
                 'message' => 'Success generate response',
-                'link' => '/api/reset-password/' . $token,
+                'link' => $link,
             ]);
         }
 
