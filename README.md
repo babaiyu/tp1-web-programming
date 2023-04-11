@@ -2,7 +2,7 @@
 
 Tugas personal 2 yang dibuat dengan Autentikasi web pada Laravel 10
 
-### Prerequisite
+### Getting Started
 
 Run:
 
@@ -35,3 +35,21 @@ Finally, run:
 ```bash
 php artisan migrate:fresh --seed
 ```
+
+### Start Local Development
+
+To start local development, we must open 2 tabs terminal
+
+-   Tab 1:
+
+```bash
+npm run dev
+```
+
+-   Tab 2:
+
+```bash
+php artisan serve
+```
+
+Finally, open [localhost:8000](http://127.0.0.1:8000)
