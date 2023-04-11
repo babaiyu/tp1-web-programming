@@ -49,7 +49,7 @@ export default function RegisterPage() {
                 show={errorMessage?.message !== null}
             />
 
-            <section className="container mx-auto max-w-7xl">
+            <section className="container mx-auto max-w-7xl mt-28">
                 <div className="mt-8 text-center flex flex-col justify-center items-center">
                     <h1 className="text-2xl font-bold">Sign Up</h1>
                     <h2 className="text-lg">Register as user here...</h2>

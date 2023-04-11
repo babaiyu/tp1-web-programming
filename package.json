@@ -17,8 +17,10 @@
         "@inertiajs/react": "^1.0.2",
         "clsx": "1.2.1",
         "daisyui": "2.51.5",
+        "dayjs": "1.11.7",
         "react": "18.2.0",
         "react-dom": "18.2.0",
+        "react-google-recaptcha": "2.1.0",
         "react-hook-form": "7.43.9",
         "yup": "1.0.2"
     }

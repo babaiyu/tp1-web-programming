@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Link } from "@inertiajs/react";
 import { useForm, Controller } from "react-hook-form";
 import clsx from "clsx";
+import dayjs from "dayjs";
 import Layout from "../Components/Layout";
 import InputText from "../Components/InputText";
 import Alert from "../Components/Alert";
@@ -28,21 +30,50 @@ export default function LoginPage({ errorMessage }) {
     });
     const [countFail, setCountFail] = useState(0);
 
-    const onSubmit = async (data) => {
-        await apiLogin(data)
-            .then((res) => {
-                const response = res.data;
-                localStorage.setItem("TOKEN", response?.token);
+    const captchaRef = useRef(null);
 
-                window.location.href = "/";
-            })
-            .catch((err) => {
-                setValue("password", "");
-                const message = err?.response?.data?.message ?? err?.message;
-                setError({ message, type: "danger" });
-                setCountFail((v) => v + 1);
-            });
+    const onSubmit = async (data) => {
+        const captchaToken = captchaRef.current.getValue();
+
+        if (captchaToken) {
+            await apiLogin(data)
+                .then((res) => {
+                    const response = res.data;
+                    localStorage.setItem("TOKEN", response?.token);
+
+                    window.location.href = "/";
+                })
+                .catch((err) => {
+                    setValue("password", "");
+                    const message =
+                        err?.response?.data?.message ?? err?.message;
+                    setError({ message, type: "danger" });
+                    const totalFail = countFail + 1;
+                    setCountFail(totalFail);
+
+                    if (totalFail > 2) {
+                        const failTime = dayjs().add(30, "seconds");
+                        localStorage.setItem("FAIL_TIME", failTime);
+                    }
+                })
+                .finally(() => {
+                    captchaRef.current.reset();
+                });
+        } else {
+            alert("Failed verify captcha!");
+            captchaRef.current.reset();
+        }
     };
+
+    const disabledButton = useMemo(() => {
+        const failTime = localStorage.getItem("FAIL_TIME") ?? null;
+
+        if (failTime !== null && dayjs().isBefore(failTime)) {
+            return true;
+        }
+
+        return false;
+    }, [localStorage.getItem("FAIL_TIME")]);
 
     return (
         <Layout isForGuest>
@@ -52,7 +83,7 @@ export default function LoginPage({ errorMessage }) {
                 show={errorMessage?.message !== null || error?.message !== null}
             />
 
-            <section className="container mx-auto max-w-7xl">
+            <section className="container mx-auto max-w-7xl mt-28">
                 <div className="mt-8 text-center flex flex-col justify-center items-center">
                     <h1 className="text-2xl font-bold">Sign In</h1>
                     <h2 className="text-lg">Please sign-in to continue</h2>
@@ -95,6 +126,11 @@ export default function LoginPage({ errorMessage }) {
                         )}
                     />
 
+                    <ReCAPTCHA
+                        ref={captchaRef}
+                        sitekey="6LdIXnolAAAAAKGZCtYOs_T1sYN_LLqGjwdbCv_W"
+                    />
+
                     <div className="max-w-xs w-full text-end mt-4 mb-2">
                         <Link
                             href="/forgot-password"
@@ -107,13 +143,20 @@ export default function LoginPage({ errorMessage }) {
                     <button
                         className={clsx(
                             "btn btn-primary btn-block max-w-xs",
-                            countFail >= 3 && "btn-disabled"
+                            disabledButton && "btn-disabled"
                         )}
                         type="submit"
-                        disabled={countFail >= 3}
+                        disabled={disabledButton}
                     >
                         Sign In
                     </button>
+
+                    {disabledButton ? (
+                        <span className="text-red-800 text-sm italic mt-2">
+                            Sorry, you are allowed to login again after 30
+                            seconds from your last error.
+                        </span>
+                    ) : null}
 
                     <p className="text-center">
                         Don't have an account?{" "}

@@ -27,7 +27,6 @@ export default function ForgotPasswordPage() {
     const onSubmit = async (data) => {
         await apiForgotPassword(data)
             .then((res) => {
-                console.log("Res => ", res.data);
                 setError({ message: res.data?.message ?? "", type: "success" });
             })
             .catch((err) => {
@@ -44,7 +43,7 @@ export default function ForgotPasswordPage() {
                 show={error?.message !== null}
             />
 
-            <section className="container mx-auto max-w-7xl">
+            <section className="container mx-auto max-w-7xl mt-28">
                 <div className="mt-8 text-center flex flex-col justify-center items-center">
                     <h1 className="text-2xl font-bold">Forgot Password</h1>
                     <h2 className="text-lg">
