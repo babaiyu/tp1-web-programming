@@ -2,7 +2,12 @@
 
 Tugas personal 2 yang dibuat dengan Autentikasi web pada Laravel 10
 
-### Getting Started
+## Technology Used
+- Laravel (10)
+- InertiaJS (for ReactJS frontend)
+- SQLite (for database)
+
+## Getting Started
 
 Run:
 
@@ -36,7 +41,7 @@ Finally, run:
 php artisan migrate:fresh --seed
 ```
 
-### Start Local Development
+## Start Local Development
 
 To start local development, we must open 2 tabs terminal
 

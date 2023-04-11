@@ -1,9 +1,12 @@
 import React from "react";
+import Layout from "../Components/Layout";
 
 export default function LoginPage() {
     return (
-        <div>
-            <h1>Hello World, i'm ReactJS</h1>
-        </div>
+        <Layout>
+            <section className="container mx-auto">
+                <h1>Login Page</h1>
+            </section>
+        </Layout>
     );
 }
