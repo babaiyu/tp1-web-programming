@@ -3,8 +3,9 @@
 Tugas personal 2 yang dibuat dengan Autentikasi web pada Laravel 10
 
 ## Technology Used
-- Laravel (10)
+- Laravel 10 (for backend REST-API)
 - InertiaJS (for ReactJS frontend)
+- TailwindCSS (for UI Styling)
 - SQLite (for database)
 
 ## Getting Started
@@ -59,4 +60,4 @@ npm run dev
 php artisan serve
 ```
 
-Finally, open [localhost:8000](http://127.0.0.1:8000)
+Finally, open [localhost:8000](http://localhost:8000/)
