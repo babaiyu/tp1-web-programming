@@ -6,6 +6,7 @@ import InputText from "../Components/InputText";
 import { schemaRegister } from "../helpers/validation";
 import { apiRegister } from "../api";
 import Alert from "../Components/Alert";
+import clsx from "clsx";
 
 export default function RegisterPage() {
     const {
@@ -26,8 +27,10 @@ export default function RegisterPage() {
         message: null,
         type: null,
     });
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (data) => {
+        setLoading(true);
         await apiRegister(data)
             .then((res) => {
                 window.location.href =
@@ -38,6 +41,9 @@ export default function RegisterPage() {
                     JSON.stringify(err?.response?.data) ?? err?.message;
                 setErrorMessage({ message, type: "danger" });
                 // alert(JSON.stringify(err?.response?.data) ?? err?.message);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -123,7 +129,10 @@ export default function RegisterPage() {
                     />
 
                     <button
-                        className="btn btn-primary btn-block max-w-xs"
+                        className={clsx(
+                            "btn btn-primary btn-block max-w-xs",
+                            loading && "loading btn-disabled"
+                        )}
                         type="submit"
                     >
                         Sign Up

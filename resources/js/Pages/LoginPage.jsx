@@ -29,6 +29,7 @@ export default function LoginPage({ errorMessage }) {
         type: null,
     });
     const [countFail, setCountFail] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const captchaRef = useRef(null);
 
@@ -36,6 +37,7 @@ export default function LoginPage({ errorMessage }) {
         const captchaToken = captchaRef.current.getValue();
 
         if (captchaToken) {
+            setLoading(true);
             await apiLogin(data)
                 .then((res) => {
                     const response = res.data;
@@ -58,6 +60,7 @@ export default function LoginPage({ errorMessage }) {
                 })
                 .finally(() => {
                     captchaRef.current.reset();
+                    setLoading(false);
                 });
         } else {
             alert("Failed verify captcha!");
@@ -143,7 +146,8 @@ export default function LoginPage({ errorMessage }) {
                     <button
                         className={clsx(
                             "btn btn-primary btn-block max-w-xs",
-                            disabledButton && "btn-disabled"
+                            disabledButton || loading && "btn-disabled",
+                            loading && "loading"
                         )}
                         type="submit"
                         disabled={disabledButton}

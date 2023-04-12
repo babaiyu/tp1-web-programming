@@ -6,6 +6,7 @@ import InputText from "../Components/InputText";
 import Alert from "../Components/Alert";
 import { schemaForgotPassword } from "../helpers/validation";
 import { apiForgotPassword } from "../api";
+import clsx from "clsx";
 
 export default function ForgotPasswordPage() {
     const {
@@ -23,8 +24,10 @@ export default function ForgotPasswordPage() {
         message: null,
         type: null,
     });
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (data) => {
+        setLoading(true);
         await apiForgotPassword(data)
             .then((res) => {
                 setError({ message: res.data?.message ?? "", type: "success" });
@@ -32,6 +35,9 @@ export default function ForgotPasswordPage() {
             .catch((err) => {
                 const message = err?.response?.data?.message ?? err?.message;
                 setError({ message, type: "danger" });
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -73,7 +79,10 @@ export default function ForgotPasswordPage() {
                     />
 
                     <button
-                        className="btn btn-primary btn-block max-w-xs"
+                        className={clsx(
+                            "btn btn-primary btn-block max-w-xs",
+                            loading && "btn-disabled loading"
+                        )}
                         type="submit"
                     >
                         Submit

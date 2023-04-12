@@ -6,6 +6,7 @@ import InputText from "../Components/InputText";
 import { schemaResetPassword } from "../helpers/validation";
 import { apiResetPassword } from "../api";
 import Alert from "../Components/Alert";
+import clsx from "clsx";
 
 export default function ResetPasswordPage({ token = null, email = null }) {
     const {
@@ -26,6 +27,7 @@ export default function ResetPasswordPage({ token = null, email = null }) {
         message: null,
         type: null,
     });
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = async (data) => {
         await apiResetPassword(token, data)
@@ -115,7 +117,10 @@ export default function ResetPasswordPage({ token = null, email = null }) {
                     />
 
                     <button
-                        className="btn btn-primary btn-block max-w-xs"
+                        className={clsx(
+                            "btn btn-primary btn-block max-w-xs",
+                            loading && "btn-disabled loading"
+                        )}
                         type="submit"
                     >
                         Reset Password
