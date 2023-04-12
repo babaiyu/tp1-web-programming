@@ -35,6 +35,8 @@ DB_CONNECTION=sqlite
 JWT_SHOW_BLACKLIST_EXCEPTION=true
 ```
 
+> NOTE: For mail setup, we use smtp service from outlook.
+
 Finally, run:
 
 ```bash

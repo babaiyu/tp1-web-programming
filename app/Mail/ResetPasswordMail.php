@@ -16,10 +16,10 @@ class ResetPasswordMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $email, public string $resetLink)
-    {
-        //
-    }
+    public function __construct(
+        public string $email,
+        public string $resetLink,
+    ) {}
 
     /**
      * Get the message envelope.
@@ -38,6 +38,10 @@ class ResetPasswordMail extends Mailable
     {
         return new Content(
             view: 'mails.resetpassword',
+            with: [
+                'email' => $this->email,
+                'resetLink' => $this->resetLink,
+            ],
         );
     }
 

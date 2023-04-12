@@ -39,11 +39,11 @@ class ForgotPasswordController extends Controller
         }
 
         $token = Str::random(64);
-        $link = '/' . 'reset-password/' . $token . '/' . $request->input('email');
+        $link = 'http://localhost:8000/' . 'reset-password/' . $token . '/' . $request->input('email');
         $checkDB = DB::table('password_reset_tokens')->where('email', $request->input('email'))->first();
 
-        // Mail::to($request->input('email'))
-        //     ->send(new ResetPasswordMail($request->input('email'), $link));
+        Mail::to($request->input('email'))
+            ->send(new ResetPasswordMail($request->input('email'), $link));
 
         if ($checkDB != null) {
             DB::table('password_reset_tokens')->where('email', $request->input('email'))->update(['token' => $token]);
@@ -62,28 +62,11 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($saveDB) {
-            // Mail::send(
-            //     'mails.resetpassword',
-            //     [
-            //         'email' => $request->input('email'),
-            //         'resetLink' => $link
-            //     ],
-            //     function ($message) use ($request) {
-            //         $message->to($request->input('email'));
-            //         $message->subject('Reset password!');
-            //     }
-            // );
-
             return response()->json([
                 'success' => true,
                 'message' => 'Success generate response',
                 'link' => $link,
             ]);
         }
-
-        // Mail::send('email.forgotPassword', ['token' => $token], function ($message) use ($request) {
-        //     $message->to($request->input('email'));
-        //     $message->subject('Reset Password - TP2 Autentikasi Laravel');
-        // });
     }
 }
