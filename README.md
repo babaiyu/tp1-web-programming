@@ -3,10 +3,11 @@
 Tugas personal 2 yang dibuat dengan Autentikasi web pada Laravel 10
 
 ## Technology Used
-- Laravel 10 (for backend REST-API)
-- InertiaJS (for ReactJS frontend)
-- TailwindCSS (for UI Styling)
-- SQLite (for database)
+
+-   Laravel 10 (for backend REST-API)
+-   InertiaJS (for ReactJS frontend)
+-   TailwindCSS (for UI Styling)
+-   SQLite (for database)
 
 ## Getting Started
 
@@ -61,3 +62,13 @@ php artisan serve
 ```
 
 Finally, open [localhost:8000](http://localhost:8000/)
+
+## References
+
+Below are references to create this project:
+
+-   [Laravel 10](https://laravel.com/)
+-   [Inertia JS](https://inertiajs.com/)
+-   [Tailwind CSS](https://tailwindcss.com/)
+-   [JWT-AUTH by PHP Open Source Saver](https://github.com/PHP-Open-Source-Saver/jwt-auth)
+-   [Email Template](https://github.com/ColorlibHQ/email-templates/tree/master/10)
